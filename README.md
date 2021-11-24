@@ -15,3 +15,6 @@ The file has to look like follows:
 <ID>;stop;      // to stop the play list
 <ID>;shutdowm;  // turn off the computer if Node-RED runs as sudo
 ```
+
+## How to get the ID?
+The card reader is recognized as a keyboard from the operating system. You just have to open an editor and put the card on the reader. You will see immediately the ID number.
