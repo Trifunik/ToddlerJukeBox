@@ -1,2 +1,2 @@
 # ToddlerJukeBox
-Toddler can be its own DJ with RFID cards
+Toddlers can be their own DJ with RFID cards
