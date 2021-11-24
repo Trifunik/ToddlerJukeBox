@@ -1,0 +1,256 @@
+[
+    {
+        "id": "a87712ddf065c83a",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a280c020bc1da6bd",
+        "type": "exec",
+        "z": "a87712ddf065c83a",
+        "command": "",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "play list",
+        "x": 1020,
+        "y": 380,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "5408c93b8601d76d",
+        "type": "file in",
+        "z": "a87712ddf065c83a",
+        "name": "get textfile",
+        "filename": "/home/trifu/Projekte/MusikRFID/play_db.txt",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 390,
+        "y": 380,
+        "wires": [
+            [
+                "77ed35679a130d35",
+                "65d66f81aff9c017"
+            ]
+        ]
+    },
+    {
+        "id": "fafb7a6436e4b77f",
+        "type": "debug",
+        "z": "a87712ddf065c83a",
+        "name": "debug_4",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "65d66f81aff9c017",
+        "type": "function",
+        "z": "a87712ddf065c83a",
+        "name": "find correct link",
+        "func": "\nvar input = global.get(\"RFID\");\nvar stripped = msg.payload.replace(/(\\r\\n|\\n|\\r)/gm, \"\");\nvar values = stripped.split(';');\n\nmsg.payload = values;\n\n\n\n\n\nfor (let i = 0; i < values.length; i=i+2) {\n    \n    if (values[i] === input) {\n        switch (values[i+1]) {\n            case \"shutdown\":\n                msg.payload = \"sudo shutdown now\";\n                break;\n            case \"stop\":\n                msg.payload = \"pkill vlc\";\n                break;\n            default:\n                msg.payload = \"pkill vlc; vlc -L \".concat(values[i+1]);\n        }\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 380,
+        "wires": [
+            [
+                "fafb7a6436e4b77f",
+                "a280c020bc1da6bd"
+            ]
+        ]
+    },
+    {
+        "id": "77ed35679a130d35",
+        "type": "debug",
+        "z": "a87712ddf065c83a",
+        "name": "debtug_3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "94446f74222281c7",
+        "type": "function",
+        "z": "a87712ddf065c83a",
+        "name": "save ID",
+        "func": "global.set(\"RFID\",msg.payload);\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 260,
+        "wires": [
+            [
+                "5408c93b8601d76d"
+            ]
+        ]
+    },
+    {
+        "id": "707cbe448f10c378",
+        "type": "keydown",
+        "z": "a87712ddf065c83a",
+        "name": "Input",
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "6fb209a182e1524f"
+            ]
+        ]
+    },
+    {
+        "id": "6a4d6b4bcad9751b",
+        "type": "debug",
+        "z": "a87712ddf065c83a",
+        "name": "debug_2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "6fb209a182e1524f",
+        "type": "function",
+        "z": "a87712ddf065c83a",
+        "name": "get ID value",
+        "func": "var tmp = String.fromCharCode(msg.payload.rawcode);\ndelete msg.payload;\nmsg.payload = tmp;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 260,
+        "wires": [
+            [
+                "bb6b52fd3f292b75",
+                "2d554b8d3bd8fa7b"
+            ]
+        ]
+    },
+    {
+        "id": "8da7b359257b2717",
+        "type": "join",
+        "z": "a87712ddf065c83a",
+        "name": "concat ID",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "0.5",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 820,
+        "y": 260,
+        "wires": [
+            [
+                "6a4d6b4bcad9751b",
+                "94446f74222281c7"
+            ]
+        ]
+    },
+    {
+        "id": "bb6b52fd3f292b75",
+        "type": "debug",
+        "z": "a87712ddf065c83a",
+        "name": "debug_1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "2d554b8d3bd8fa7b",
+        "type": "switch",
+        "z": "a87712ddf065c83a",
+        "name": "get only numbers",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "btwn",
+                "v": "0",
+                "vt": "str",
+                "v2": "9",
+                "v2t": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 630,
+        "y": 260,
+        "wires": [
+            [
+                "8da7b359257b2717"
+            ]
+        ]
+    },
+    {
+        "id": "6fadc759c05e9623",
+        "type": "comment",
+        "z": "a87712ddf065c83a",
+        "name": "README",
+        "info": "This flow uses textfile as database. Set the link to the textfile in the node \"get textfile\".\n\ntestfile has to look like:\n<ID>;<LINK>;\n<ID>;stop;      // to stop the play list\n<ID>;shutdowm;  // turn off the computer if Node-RED runs as sudo",
+        "x": 340,
+        "y": 180,
+        "wires": []
+    }
+]
