@@ -32,7 +32,7 @@
         "type": "file in",
         "z": "a87712ddf065c83a",
         "name": "get textfile",
-        "filename": "/home/trifu/Projekte/MusikRFID/play_db.txt",
+        "filename": "/home/nuc/Schreibtisch/playlist.txt",
         "format": "utf8",
         "chunk": false,
         "sendError": false,
@@ -69,7 +69,7 @@
         "type": "function",
         "z": "a87712ddf065c83a",
         "name": "find correct link",
-        "func": "\nvar input = global.get(\"RFID\");\nvar stripped = msg.payload.replace(/(\\r\\n|\\n|\\r)/gm, \"\");\nvar values = stripped.split(';');\n\nmsg.payload = values;\n\n\n\n\n\nfor (let i = 0; i < values.length; i=i+2) {\n    \n    if (values[i] === input) {\n        switch (values[i+1]) {\n            case \"shutdown\":\n                msg.payload = \"sudo shutdown now\";\n                break;\n            case \"stop\":\n                msg.payload = \"pkill vlc\";\n                break;\n            default:\n                msg.payload = \"pkill vlc; vlc -L \".concat(values[i+1]);\n        }\n        return msg;\n    }\n}\n\n",
+        "func": "\nvar input = global.get(\"RFID\");\nvar old_input = global.get(\"OLD_ID\");\nvar stripped = msg.payload.replace(/(\\r\\n|\\n|\\r)/gm, \"\");\nvar values = stripped.split(';');\n\nmsg.payload = values;\n\n\n\n\n\nfor (let i = 0; i < values.length; i=i+2) {\n    \n    if (values[i] === input) {\n        switch (values[i+1]) {\n            case \"shutdown\":\n                msg.payload = \"sudo shutdown now\";\n                break;\n            case \"stop\":\n                msg.payload = \"pkill vlc\";\n                break;\n            default:\n                if ( input === old_input) {\n                    msg.payload = \":\";\n                } else {\n                    msg.payload = \"pkill vlc; vlc \".concat(values[i+1]);\n                }\n        }\n        global.set(\"OLD_ID\",input);\n        return msg;\n    }\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -117,19 +117,6 @@
         "wires": [
             [
                 "5408c93b8601d76d"
-            ]
-        ]
-    },
-    {
-        "id": "707cbe448f10c378",
-        "type": "keydown",
-        "z": "a87712ddf065c83a",
-        "name": "Input",
-        "x": 240,
-        "y": 260,
-        "wires": [
-            [
-                "6fb209a182e1524f"
             ]
         ]
     },
@@ -252,5 +239,18 @@
         "x": 340,
         "y": 180,
         "wires": []
+    },
+    {
+        "id": "707cbe448f10c378",
+        "type": "keydown",
+        "z": "a87712ddf065c83a",
+        "name": "Input",
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "6fb209a182e1524f"
+            ]
+        ]
     }
 ]
